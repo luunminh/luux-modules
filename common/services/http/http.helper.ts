@@ -1,5 +1,6 @@
+import { isEmpty } from '@core/common/utils';
 import { ApisauceInstance } from 'apisauce';
-import { ToastService } from '..';
+import { ToastService, TokenService } from '..';
 
 type ApiCall = (..._args: any[]) => Promise<any>;
 
@@ -12,17 +13,6 @@ export async function responseWrapper<T>(func: ApiCall, [...args]: any[] = []): 
         ToastService.error('Connection timeout. Please check your network and try again.');
       }
       rej(response.data);
-    } catch (err) {
-      rej(err);
-    }
-  });
-}
-
-export async function authResponseWrapper<T>(func: ApiCall, [...args]: any[] = []): Promise<T> {
-  return new Promise(async (res, rej) => {
-    try {
-      const response = (await func(...args)) || {};
-      res(response);
     } catch (err) {
       rej(err);
     }
@@ -56,33 +46,37 @@ export interface ApiPaginationResponseType<T> {
   query?: Object;
 }
 
-// TODO: Implement this function
 export const configApiInstance = (api: ApisauceInstance) => {
-  // api.axiosInstance.interceptors.request.use((config) =>
-  //   TokenService.getToken()
-  //     .then((token: any) => {
-  //       config.headers.Authorization = `Bearer ${token}`;
-  //       return Promise.resolve(config);
-  //     })
-  //     .catch(() => Promise.resolve(config)),
-  // );
-  // api.axiosInstance.interceptors.response.use(undefined, (error) => {
-  //   if (error.response.status === 401) {
-  //     errorService.interceptorsErrorHandler(error.response.data);
-  //     const jumpToIdentity = () => {
-  //       Navigator.jumpToWebIdentity();
-  //     };
-  //     setTimeout(() => {
-  //       Auth.signOut()
-  //         .then(() => {
-  //           jumpToIdentity();
-  //         })
-  //         .catch((error) => {
-  //           ToastService.error(error.message);
-  //           jumpToIdentity();
-  //         });
-  //     }, 800);
-  //   }
-  //   return Promise.reject(error);
-  // });
+  api.axiosInstance.interceptors.request.use(
+    (config) => {
+      const token = TokenService.getACToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (err) => Promise.reject(err),
+  );
+
+  api.axiosInstance.interceptors.response.use(undefined, async (error) => {
+    if (error.response.status === 401) {
+      const refreshToken = TokenService.getRFToken();
+
+      if (refreshToken) {
+        const { accessToken } = await TokenService.forceRefreshToken(refreshToken);
+
+        if (isEmpty(accessToken)) {
+          TokenService.clearTokens();
+          ToastService.error(error.response.data.message);
+
+          return Promise.reject(error);
+        }
+
+        error.config.headers.Authorization = `Bearer ${accessToken}`;
+        return api.axiosInstance(error.config);
+      }
+    }
+    TokenService.clearTokens();
+    return Promise.reject(error);
+  });
 };
