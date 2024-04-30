@@ -12,4 +12,13 @@ const getFonts = () => {
   );
 };
 
-export { getFonts };
+const getFont = ({ fontName }: { fontName: string }) => {
+  console.log('getFont ~ fontName:', fontName);
+  return httpService.get(
+    `${GOOGLE_FONT_API}?key=${envConfigs.GOOGLE_API_KEY}&sort=popularity&capability=WOFF2&family=${fontName}`,
+    {},
+    newCancelToken(),
+  );
+};
+
+export { getFont, getFonts };
