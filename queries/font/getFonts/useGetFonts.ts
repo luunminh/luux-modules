@@ -1,9 +1,9 @@
 import { responseWrapper } from '@core/common/services/http';
 import { UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { CommonApi } from '..';
-import { COMMON_API_KEYS } from '../key';
 import { IFont, TGoogleFontsResponse } from './useGetFonts.types';
+import { COMMON_API_KEYS } from '@core/queries/key';
+import { CommonApi } from '@core/queries';
 
 export function useGetFonts(options?: UseQueryOptions<TGoogleFontsResponse, Error, IFont[]>) {
   const {

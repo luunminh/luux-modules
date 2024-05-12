@@ -1,13 +1,14 @@
 import { isEmpty } from '@core/common';
 import { responseWrapper } from '@core/common/services/http';
 import { UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CommonApi, IFont, TGoogleFontsResponse } from '..';
-import { COMMON_API_KEYS } from '../key';
+import { IFont, TGoogleFontsResponse } from '..';
+import { CommonApi } from '@core/queries';
+import { COMMON_API_KEYS } from '@core/queries/key';
 
 export function useGetFont(
   options?: UseQueryOptions<TGoogleFontsResponse, Error, IFont> & {
     fontName: string;
-  },
+  }
 ) {
   const {
     data: font,
@@ -26,7 +27,7 @@ export function useGetFont(
       notifyOnChangeProps: ['data', 'refetch'],
       enabled: !isEmpty(options.fontName),
       ...options,
-    },
+    }
   );
 
   const queryClient = useQueryClient();

@@ -1,5 +1,5 @@
 export * as CommonApi from './common.api';
 
-export * from './getFont';
-export * from './getFonts';
+export * from './font';
 export * from './profile';
+export * from './elementCategory';
