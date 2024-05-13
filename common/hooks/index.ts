@@ -5,3 +5,4 @@ export { default as usePathname } from './usePathname';
 // export { default as usePrompt } from './usePrompt';
 export { default as useClickOutside } from './useClickOutside';
 export { default as useFonts } from './useFonts';
+export { default as useSvgContent } from './useSvgContent';

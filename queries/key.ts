@@ -4,4 +4,6 @@ export const COMMON_API_KEYS = {
   font: 'font',
 
   profile: 'profile',
+
+  attachment: 'attachment',
 };
