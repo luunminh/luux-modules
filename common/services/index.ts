@@ -8,3 +8,5 @@ export { pollAndDownloadFile } from './poll-and-download-file';
 export { default as ToastService } from './toast.service';
 export { default as TokenService } from './token.service';
 export { default as Yup } from './yup';
+
+export * from './navigator';
