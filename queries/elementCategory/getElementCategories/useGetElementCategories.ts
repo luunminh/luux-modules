@@ -5,10 +5,9 @@ import { useState } from 'react';
 import { IElementCategory } from '.';
 import { ELEMENT_CATEGORY_QUERY_KEY } from '../key';
 import { ElementCategoryApi } from '..';
-import { SelectOption } from '@vizplatform/react-ui';
 
 export function useGetElementCategories(
-  options?: UseQueryOptions<PaginationResponseType<IElementCategory>, Error>
+  options?: UseQueryOptions<PaginationResponseType<IElementCategory>, Error>,
 ) {
   const [params, setParams] = useState<GetPropertiesParams>({ take: 50, skip: 0 });
   const {
@@ -25,14 +24,14 @@ export function useGetElementCategories(
         const [_, ...params] = query.queryKey;
         return responseWrapper<PaginationResponseType<IElementCategory>>(
           ElementCategoryApi.getElementCategories,
-          params
+          params,
         );
       },
       notifyOnChangeProps: ['data', 'isFetching'],
       keepPreviousData: true,
       enabled: !isEmpty(params),
       ...options,
-    }
+    },
   );
 
   const queryClient = useQueryClient();
@@ -42,10 +41,11 @@ export function useGetElementCategories(
 
   const { data: elementCategories = [], hasNext, payloadSize, totalRecords } = data || {};
 
-  const categoryOptions: SelectOption[] = elementCategories.map((category) => ({
-    label: category.displayName,
-    value: category.id,
-  }));
+  const categoryOptions: { label: string; value: string; [key: string]: any }[] =
+    elementCategories.map((category) => ({
+      label: category.displayName,
+      value: category.id,
+    }));
 
   return {
     elementCategories,

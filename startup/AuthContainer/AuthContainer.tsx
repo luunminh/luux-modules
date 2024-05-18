@@ -1,24 +1,76 @@
-import { TokenService, useComponentDidMount } from '@core/common';
+import appConfigs from '@config';
+import { ErrorService, Navigator, TokenService, useComponentDidMount } from '@core/common';
+import { UserType, useProfile } from '@core/queries';
 import { useAuthStore } from '@core/store';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const AuthContainer: FC<Props> = () => {
-  const { onSetIsAuthenticated, onSetUserProfile } = useAuthStore();
+  const { onSetIsAuthenticated, onSetUserProfile, isAuthenticated } = useAuthStore();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // TODO: handle getMyProfile
-  // const { getMyProfile } = useProfile();
+  const { getMyProfile } = useProfile();
+
+  const handleGetProfile = () => {
+    getMyProfile()
+      .then((res) => {
+        if (res.data) {
+          const user = res.data;
+
+          onSetUserProfile(user);
+          onSetIsAuthenticated(true);
+
+          handleJumpToPortals(user.type);
+        } else {
+          clearAuth();
+        }
+      })
+      .catch((error) => {
+        clearAuth();
+        ErrorService.handler(error);
+      });
+  };
 
   useComponentDidMount(() => {
-    const accessToken = TokenService.getACToken();
-    const refreshToken = TokenService.getRFToken();
+    if (searchParams.has('accessToken') && searchParams.has('refreshToken')) {
+      const accessToken = searchParams.get('accessToken');
+      const refreshToken = searchParams.get('refreshToken');
 
-    if (accessToken && refreshToken) {
-      // getMyProfile();
-      onSetIsAuthenticated(true);
-    } else {
-      clearAuth();
+      TokenService.setACToken(accessToken);
+      TokenService.setRFToken(refreshToken);
+
+      setSearchParams({ accessToken: undefined, refreshToken: undefined });
+
+      handleGetProfile();
     }
   });
+
+  useEffect(() => {
+    if (isAuthenticated === null || isAuthenticated) {
+      handleGetProfile();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  const handleJumpToPortals = (userType: UserType) => {
+    let params;
+
+    if (appConfigs.MODE === 'development') {
+      params = {
+        accessToken: TokenService.getACToken(),
+        refreshToken: TokenService.getRFToken(),
+      };
+    }
+
+    switch (userType) {
+      case UserType.ADMIN:
+        return Navigator.jumpToWebAdmin(params);
+      case UserType.USER:
+        return Navigator.jumpToWebApp(params);
+      default:
+        return Navigator.jumpToWebIdentity();
+    }
+  };
 
   const clearAuth = () => {
     TokenService.clearTokens();

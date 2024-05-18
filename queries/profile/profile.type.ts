@@ -10,23 +10,21 @@ export interface MyRole {
   canBeUpdated: boolean;
 }
 
+export enum UserType {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
 export interface MyProfile {
-  avatarUrl: string;
   id: string;
-  createdAt: string;
-  updatedAt: string;
   firstName: string;
   lastName: string;
   middleName: string;
-  fullName: string;
-  username: string;
   email: string;
-  userType: string;
-  hasPin: boolean;
   status: string;
-  profile: null;
-  roles: Array<{ role: MyRole }>;
-  isSuperAdmin: boolean;
+  type: UserType;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MyPermission {
