@@ -26,6 +26,11 @@ export enum YesNoValue {
   NO = 'NO',
 }
 
+export enum CommonQueryKey {
+  TAB = 'tab',
+  CLEAR_SESSIONS = 'clearSessions',
+}
+
 export enum FileType {
   Image = 'IMAGE',
   Document = 'DOCUMENT',

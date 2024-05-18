@@ -32,15 +32,16 @@ const jumpToWebIdentity = (nextPath = '') => {
 
 const jumpToWebAdmin = (params?: any) => {
   const formattedParams = stringify(params);
+
   const adminWebUrl = getPortalUrl(Tenant.ADMIN);
-  return window.open(`${getNavigateUrl(adminWebUrl)}&${formattedParams}`, '_self');
+  return window.open(`${getNavigateUrl(adminWebUrl)}?${formattedParams}`, '_self');
 };
 
 const jumpToWebApp = (params?: any) => {
   const formattedParams = stringify(params);
 
   const appWebUrl = getPortalUrl(Tenant.APP);
-  return window.open(`${getNavigateUrl(appWebUrl)}&${formattedParams}`, '_self');
+  return window.open(`${getNavigateUrl(appWebUrl)}?${formattedParams}`, '_self');
 };
 
 const isAdmin = () => window.location.pathname.includes(Tenant.ADMIN);

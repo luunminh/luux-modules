@@ -52,4 +52,6 @@ export default {
   setRFToken,
   clearTokens,
   forceRefreshToken,
+  ACCESS_TOKEN,
+  REFRESH_TOKEN,
 };

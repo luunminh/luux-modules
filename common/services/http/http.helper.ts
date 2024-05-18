@@ -1,6 +1,6 @@
 import { isEmpty } from '@core/common/utils';
 import { ApisauceInstance } from 'apisauce';
-import { ToastService, TokenService } from '..';
+import { Navigator, ToastService, TokenService } from '..';
 
 type ApiCall = (..._args: any[]) => Promise<any>;
 
@@ -67,7 +67,8 @@ export const configApiInstance = (api: ApisauceInstance) => {
 
         if (isEmpty(accessToken)) {
           TokenService.clearTokens();
-          ToastService.error(error.response.data.message);
+          Navigator.jumpToWebIdentity();
+          // ToastService.error(error.response.data.message);
 
           return Promise.reject(error);
         }
