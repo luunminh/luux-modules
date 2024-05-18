@@ -76,7 +76,6 @@ export const configApiInstance = (api: ApisauceInstance) => {
         return api.axiosInstance(error.config);
       }
     }
-    TokenService.clearTokens();
     return Promise.reject(error);
   });
 };
