@@ -1,40 +1,47 @@
-import { responseWrapper } from '@core/common/services/http';
-import { UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo } from 'react';
-import { IFont, TGoogleFontsResponse } from './useGetFonts.types';
-import { COMMON_API_KEYS } from '@core/queries/key';
+import { PaginationResponseType, responseWrapper } from '@core/common/services/http';
+import { isEmpty } from '@core/common/utils';
 import { CommonApi } from '@core/queries';
+import { COMMON_API_KEYS } from '@core/queries/key';
+import { UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { IFont, IFontParams } from './useGetFonts.types';
 
-export function useGetFonts(options?: UseQueryOptions<TGoogleFontsResponse, Error, IFont[]>) {
+export function useGetFonts(options?: UseQueryOptions<PaginationResponseType<IFont>, Error>) {
+  const [params, setParams] = useState<IFontParams>(null);
   const {
     data,
     error,
     isError,
-    isFetching: isLoadingFonts,
+    isFetching,
     refetch: onGetFonts,
-  } = useQuery<TGoogleFontsResponse, Error, IFont[]>([COMMON_API_KEYS.fonts], {
+  } = useQuery<PaginationResponseType<IFont>, Error>([COMMON_API_KEYS.fonts, params], {
     queryFn: (query) => {
-      return responseWrapper<TGoogleFontsResponse>(CommonApi.getFonts);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [_, ...params] = query.queryKey;
+      return responseWrapper<PaginationResponseType<IFont>>(CommonApi.getFonts, params);
     },
-    select: (data) => data.items,
-    notifyOnChangeProps: ['data', 'refetch'],
+    notifyOnChangeProps: ['data', 'isFetching'],
+    keepPreviousData: true,
+    enabled: !isEmpty(params),
     ...options,
   });
 
   const queryClient = useQueryClient();
 
-  const handleInvalidateFonts = () => {
-    return queryClient.invalidateQueries([COMMON_API_KEYS.fonts]);
-  };
+  const handleInvalidateFonts = () => queryClient.invalidateQueries([COMMON_API_KEYS.fonts]);
 
-  const fonts: IFont[] = useMemo(() => data?.splice(0, 50), [data]);
+  const { data: fonts = [], hasNext, payloadSize, totalRecords } = data || {};
 
   return {
     fonts,
+    hasNext,
+    payloadSize,
+    totalRecords,
     error,
     isError,
-    isLoadingFonts,
+    isFetching,
     onGetFonts,
+    setParams,
     handleInvalidateFonts,
   };
 }

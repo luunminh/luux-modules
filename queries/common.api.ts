@@ -1,23 +1,21 @@
 import { envConfigs } from '@config/env';
-import { newCancelToken } from '@core/common';
+import { newCancelToken, stringify } from '@core/common';
 import { httpService } from '@core/common/services/http';
 import { IUploadAttachmentPayload } from './attachment';
+import { IFontParams } from './font';
 
 const GOOGLE_FONT_API = 'https://www.googleapis.com/webfonts/v1/webfonts';
 
-const getFonts = () => {
-  return httpService.get(
-    `${GOOGLE_FONT_API}?key=${envConfigs.GOOGLE_API_KEY}&sort=popularity&capability=WOFF2`,
-    {},
-    newCancelToken()
-  );
+const getFonts = (params: IFontParams) => {
+  const querystring = stringify(params);
+  return httpService.get(`/fonts?${querystring}`, {}, newCancelToken());
 };
 
 const getFont = ({ fontName }: { fontName: string }) => {
   return httpService.get(
     `${GOOGLE_FONT_API}?key=${envConfigs.GOOGLE_API_KEY}&sort=popularity&capability=WOFF2&family=${fontName}`,
     {},
-    newCancelToken()
+    newCancelToken(),
   );
 };
 

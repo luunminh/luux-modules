@@ -1,28 +1,29 @@
-export interface IFont {
-  family: string;
-  variants: string[];
-  subsets: string[];
+import { GetPropertiesParams } from '@core/common';
 
+export interface IFont {
+  id: string;
+  name: string;
   category: string;
-  files: IFontType;
+  fontUrl: IFontUrl[];
 }
 
-export interface IFontType {
-  regular: string;
-  '100'?: string;
-  '200'?: string;
-  '300'?: string;
-  '400'?: string;
-  '500'?: string;
-  '600'?: string;
-  '700'?: string;
-  '800'?: string;
-  '900'?: string;
-
-  [key: string]: string;
+export interface IFontUrl {
+  type: string;
+  url: string;
 }
 
 export type TGoogleFontsResponse = {
   kind: string;
   items: IFont[];
 };
+
+export interface IFontParams extends GetPropertiesParams {
+  names?: string[];
+  search?: string;
+}
+
+export interface IFontOptions {
+  label: string;
+  value: string;
+  font: IFont;
+}

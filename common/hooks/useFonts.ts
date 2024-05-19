@@ -1,28 +1,26 @@
 import { IFont } from '@core/queries';
+import _ from 'lodash';
 import { useEffect, useState } from 'react';
 
 function useFonts(fonts: IFont[], isEnabled = true) {
   const [fontFaces] = useState(
     fonts.map((font) => {
-      return new FontFace(
-        font.family,
-        `url(${
-          font.files.regular ||
-          font.files[300] ||
-          font.files[500] ||
-          font.files[600] ||
-          font.files[700]
-        }) format('woff2')`,
-      );
+      const order = ['regular', '300', '500', '700'];
+      const fontUrls = _.sortBy(font.fontUrl, (f) => {
+        const index = order.indexOf(f.type);
+        return index === -1 ? Infinity : index;
+      });
+
+      return new FontFace(font.name, `url(${fontUrls[0].url}) format('woff2')`);
     }),
   );
 
   const createFontFaces = (font: IFont) => {
-    const fontFaces = Object.keys(font.files).map((weight) => {
+    const fontFaces = font.fontUrl.map(({ type: weight, url }) => {
       return new FontFace(
-        `${font.family}`,
+        `${font.name}`,
         //@ts-ignore
-        `url(${font.files[weight]}) format('woff2')`,
+        `url(${url}) format('woff2')`,
       );
     });
 

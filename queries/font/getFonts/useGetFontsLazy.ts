@@ -1,110 +1,92 @@
-// import { TaskTypeNameTag } from '@components';
-// import { SelectLazyOption } from '@core/components/Form/FormMultiSelectLazy';
-// import { cleanValueSearchInput } from '@modules/work-queue/utils';
-// import { UseInfiniteQueryOptions, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-// import { useDebounce } from '@vizplatform/react-hooks';
-// import { SelectOptionsProps, Stack, Typography } from '@vizplatform/react-ui';
-// import { isEmpty } from 'lodash';
-// import { useMemo, useState } from 'react';
-// import { GetTasksParams, ITask, TasksApi } from '..';
-// import { QUERIES_WORK_QUEUE } from '../../work-queue.keys';
+import { useDebounce } from '@core/common';
+import { PaginationResponseType, responseWrapper } from '@core/common/services/http';
+import { CommonApi } from '@core/queries';
+import { COMMON_API_KEYS } from '@core/queries/key';
+import { UseInfiniteQueryOptions, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { isEmpty } from 'lodash';
+import { useMemo, useState } from 'react';
+import { IFont, IFontOptions, IFontParams } from './useGetFonts.types';
 
-// const defaultSearch = {
-//   take: 10,
-//   skip: 0,
-// };
+const defaultSearch = {
+  take: 10,
+  skip: 0,
+};
 
-// const mapFontsOptions = (task: ITask[]): SelectLazyOption[] => {
-//   if (isEmpty(task)) return [];
+const mapFontOptions = (font: IFont[]) => {
+  return font.map((font) => ({
+    label: font.name,
+    value: font.name,
+    font: font,
+  }));
+};
 
-//   return task.map((item) => ({
-//     label: item.title,
-//     optionLabel: (
-//       <Stack direction="row">
-//         <TaskTypeNameTag value={item.taskType} />
-//         <Typography ml={1} fontSize="14px">
-//           {item.title}
-//         </Typography>
-//       </Stack>
-//     ),
-//     value: item.id,
-//     optionContent: (props: SelectOptionsProps) => (
-//       <Stack direction="row">
-//         <TaskTypeNameTag value={item.taskType} />
-//         <Typography ml={1} fontSize="14px">
-//           {item.title}
-//         </Typography>
-//       </Stack>
-//     ),
-//   }));
-// };
+export function useGetFontLazy(
+  options?: UseInfiniteQueryOptions<PaginationResponseType<IFont>, Error>,
+) {
+  const [inputSearch, setInputSearch] = useState<string>('');
+  const [params, setParams] = useState<IFontParams>({});
+  const debounceSearch = useDebounce(inputSearch, 300);
 
-// export function useGetTaskOptionLazy(
-//   options?: UseInfiniteQueryOptions<PaginationResponseType<ITask>, Error>,
-// ) {
-//   const [inputSearch, setInputSearch] = useState<string>('');
-//   const [params, setParams] = useState<GetTasksParams>(null);
-//   const debounceSearch = useDebounce(inputSearch);
+  const {
+    data,
+    error,
+    isError,
+    isFetching,
+    refetch: onGetFonts,
+    fetchNextPage,
+  } = useInfiniteQuery<PaginationResponseType<IFont>, Error>(
+    [COMMON_API_KEYS.fonts, 'options', params, debounceSearch, { type: 'lazy' }],
+    (props): Promise<PaginationResponseType<IFont>> => {
+      const { pageParam = defaultSearch } = props;
 
-//   const {
-//     data,
-//     error,
-//     isError,
-//     isFetching,
-//     refetch: onGetTasks,
-//     fetchNextPage,
-//   } = useInfiniteQuery<PaginationResponseType<ITask>, Error>(
-//     [QUERIES_WORK_QUEUE.TASKS, 'options', debounceSearch, params, { type: 'lazy' }],
-//     (props): Promise<PaginationResponseType<ITask>> => {
-//       const { pageParam = defaultSearch } = props;
+      return responseWrapper<PaginationResponseType<IFont>>(CommonApi.getFonts, [
+        { ...pageParam, ...params, search: inputSearch.trim() },
+      ]);
+    },
+    {
+      keepPreviousData: true,
+      getNextPageParam(lastPage, allPages) {
+        if (lastPage.data?.length < 10) return undefined;
+        return {
+          take: 10,
+          skip: allPages.length * 10,
+        };
+      },
+      notifyOnChangeProps: ['data', 'isFetching'],
+      enabled: !!params,
+      ...options,
+    },
+  );
 
-//       return responseWrapper<PaginationResponseType<ITask>>(TasksApi.getTasks, [
-//         { ...pageParam, ...params, search: cleanValueSearchInput(inputSearch) },
-//       ]);
-//     },
-//     {
-//       keepPreviousData: true,
-//       getNextPageParam(lastPage, allPages) {
-//         if (lastPage.data?.length < 10) return undefined;
-//         return {
-//           take: 10,
-//           skip: allPages.length * 10,
-//         };
-//       },
-//       notifyOnChangeProps: ['data', 'isFetching'],
-//       enabled: !isEmpty(params) || !isEmpty(inputSearch),
-//       ...options,
-//     },
-//   );
+  const fontOptions: IFontOptions[] = useMemo(() => {
+    if (isEmpty(data?.pages)) return [];
+    return data.pages.reduce(
+      (state, page, _pageIdx) => [...state, ...mapFontOptions(page.data)],
+      [],
+    );
+  }, [data]);
 
-//   const taskOptions: SelectLazyOption[] = useMemo(() => {
-//     if (isEmpty(data?.pages)) return [];
-//     return data.pages.reduce(
-//       (state, page, _pageIdx) => [...state, ...mapTasksOptions(page.data)],
-//       [],
-//     );
-//   }, [data]);
+  const hasNext = useMemo(() => {
+    if (isEmpty(data?.pages)) return null;
+    return data.pages[data.pages.length - 1]?.hasNext;
+  }, [data]);
 
-//   const hasNext = useMemo(() => {
-//     if (isEmpty(data?.pages)) return null;
-//     return data.pages[data.pages.length - 1]?.hasNext;
-//   }, [data]);
+  const queryClient = useQueryClient();
 
-//   const queryClient = useQueryClient();
+  const handleInvalidateFonts = () => queryClient.invalidateQueries([COMMON_API_KEYS.fonts]);
 
-//   const handleInvalidateTasks = () => queryClient.invalidateQueries([QUERIES_WORK_QUEUE.TASKS]);
-
-//   return {
-//     taskOptions,
-//     hasNext,
-//     error,
-//     isError,
-//     isFetching,
-//     inputSearch,
-//     setInputSearch,
-//     fetchNextPage,
-//     setParams,
-//     onGetTasks,
-//     handleInvalidateTasks,
-//   };
-// }
+  return {
+    fontOptions,
+    fonts: data,
+    hasNext,
+    error,
+    isError,
+    isFetching,
+    fetchNextPage,
+    setParams,
+    onGetFonts,
+    handleInvalidateFonts,
+    inputSearch,
+    setInputSearch,
+  };
+}
