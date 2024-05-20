@@ -5,6 +5,7 @@ export interface IElementCategory {
   updatedAt: string;
 }
 
+// BE should have api content or configuration base elm categories
 export enum IBaseElementCategory {
   SHAPE = 'Shape',
   GRAPHIC = 'Graphic',

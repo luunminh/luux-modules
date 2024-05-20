@@ -3,13 +3,19 @@ import { GetPropertiesParams, isEmpty } from '@core/common/utils';
 import { UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { IElementCategory } from '.';
-import { ELEMENT_CATEGORY_QUERY_KEY } from '../key';
 import { ElementCategoryApi } from '..';
+import { ELEMENT_CATEGORY_QUERY_KEY } from '../key';
 
 export function useGetElementCategories(
-  options?: UseQueryOptions<PaginationResponseType<IElementCategory>, Error>,
+  options?: UseQueryOptions<PaginationResponseType<IElementCategory>, Error> & {
+    name: string;
+  },
 ) {
-  const [params, setParams] = useState<GetPropertiesParams>({ take: 50, skip: 0 });
+  const [params, setParams] = useState<GetPropertiesParams>({
+    take: 50,
+    skip: 0,
+    search: options?.name || '',
+  });
   const {
     data,
     error,
