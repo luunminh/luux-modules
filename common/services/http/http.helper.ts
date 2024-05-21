@@ -75,6 +75,10 @@ export const configApiInstance = (api: ApisauceInstance) => {
 
         error.config.headers.Authorization = `Bearer ${accessToken}`;
         return api.axiosInstance(error.config);
+      } else {
+        console.log('No refresh token found');
+
+        Navigator.jumpToWebIdentity();
       }
     }
     return Promise.reject(error);

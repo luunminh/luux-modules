@@ -1,5 +1,5 @@
-import { Select, SelectProps } from '@components';
 import { TableParams, isEmpty, useComponentDidMount } from '@core/common';
+import { Select, SelectProps } from '@core/components';
 import { unionBy } from 'lodash';
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 
