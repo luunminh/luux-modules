@@ -1,5 +1,5 @@
 import { envConfigs } from '@config/env';
-import { newCancelToken, stringify } from '@core/common';
+import { GetPropertiesParams, newCancelToken, stringify } from '@core/common';
 import { httpService } from '@core/common/services/http';
 import { IUploadAttachmentPayload } from './attachment';
 import { IFontParams } from './font';
@@ -21,7 +21,6 @@ const getFont = ({ fontName }: { fontName: string }) => {
 
 const uploadAttachment = (payload: IUploadAttachmentPayload) => {
   const boundary = '----WebKitFormBoundary' + Math.random().toString(36).substring(2);
-
   let formattedPayload = new FormData();
   //@ts-ignore
   Object.keys(payload).map((key) => formattedPayload.append(key, payload[key]));
@@ -33,4 +32,9 @@ const uploadAttachment = (payload: IUploadAttachmentPayload) => {
   });
 };
 
-export { getFont, getFonts, uploadAttachment };
+const getAttachments = (params: GetPropertiesParams) => {
+  const querystring = stringify(params);
+  return httpService.get(`/attachments/assets?${querystring}`, {}, newCancelToken());
+};
+
+export { getAttachments, getFont, getFonts, uploadAttachment };

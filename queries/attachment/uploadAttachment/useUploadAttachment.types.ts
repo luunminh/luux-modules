@@ -4,6 +4,12 @@ export interface IUploadAttachmentResponse {
   secure_url: string;
 }
 
+export enum UploadFileTypeEnum {
+  USER_AVATAR = 'USER_AVATAR',
+  THUMBNAIL = 'THUMBNAIL',
+  ATTACHMENTS = 'ATTACHMENTS',
+}
 export interface IUploadAttachmentPayload {
   file: File;
+  type: UploadFileTypeEnum;
 }
