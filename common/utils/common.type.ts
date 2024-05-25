@@ -29,6 +29,8 @@ export enum YesNoValue {
 export enum CommonQueryKey {
   TAB = 'tab',
   CLEAR_SESSIONS = 'clearSessions',
+  SCREEN_SIZE = 'screen-size',
+  SCREEN_SIZE_ID = 'screenSizeId',
 }
 
 export enum FileType {

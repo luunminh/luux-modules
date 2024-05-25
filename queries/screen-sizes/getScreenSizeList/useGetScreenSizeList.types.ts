@@ -16,4 +16,6 @@ export interface IScreenSize {
   status: IScreenSizeStatus | string;
 }
 
-export interface GetScreenSizeListParams extends GetPropertiesParams {}
+export interface GetScreenSizeListParams extends GetPropertiesParams {
+  screenSizeIds?: string[];
+}
