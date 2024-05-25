@@ -1,5 +1,10 @@
 import { GetPropertiesParams } from '@core/common';
 
+export enum IScreenSizeStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
 export interface IScreenSize {
   id: string;
   name: string;
@@ -8,6 +13,7 @@ export interface IScreenSize {
   thumbnailUrl: string;
   createdAt: string;
   updatedAt: string;
+  status: IScreenSizeStatus | string;
 }
 
 export interface GetScreenSizeListParams extends GetPropertiesParams {}

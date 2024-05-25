@@ -1,6 +1,4 @@
 import _ from 'lodash';
-import { parse } from 'qs';
-import { Location } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { isEmpty } from '..';
 
@@ -22,13 +20,6 @@ export const dataURLtoFile = (dataUrl: string, filename: string) => {
 };
 
 export const generateArray = (length: number, initial = '') => Array(length).fill(initial);
-
-export const getLocationState = (location: Location) => {
-  const locationState = location.state as string;
-  const state = parse(locationState, { ignoreQueryPrefix: true });
-
-  return state;
-};
 
 export const handleGetError = (touched: any, errors: any, prefix: any) => {
   return _.get(touched, prefix) ? _.get(errors, prefix) : '';
