@@ -1,6 +1,6 @@
 import { isEmpty } from '@core/common/utils';
 import { ApisauceInstance } from 'apisauce';
-import { Navigator, ToastService, TokenService } from '..';
+import { Navigator, Tenant, ToastService, TokenService } from '..';
 
 type ApiCall = (..._args: any[]) => Promise<any>;
 
@@ -77,8 +77,10 @@ export const configApiInstance = (api: ApisauceInstance) => {
         return api.axiosInstance(error.config);
       } else {
         console.log('No refresh token found');
-
-        Navigator.jumpToWebIdentity();
+        const portal = Navigator.getCurrentPortalUrl();
+        if (portal !== Tenant.IDENTITY) {
+          Navigator.jumpToWebIdentity();
+        }
       }
     }
     return Promise.reject(error);
