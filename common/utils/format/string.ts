@@ -53,3 +53,7 @@ export const formatStringCellValue = (value: string | null) => {
 
 export const getFullName = ({ firstName = '', middleName = '', lastName = '' } = {}) =>
   `${firstName}${middleName ? ` ${middleName} ` : ' '}${lastName ? lastName : ''}`;
+
+export const getStandForName = ({ firstName = '', middleName = '', lastName = '' } = {}) => {
+  return `${firstName[0]}${lastName[0]}`.toUpperCase();
+};
