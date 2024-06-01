@@ -11,3 +11,4 @@ export { default as TokenService } from './token.service';
 export { default as Yup } from './yup';
 
 export * from './navigator';
+export * from './socket';
