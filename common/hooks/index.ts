@@ -4,6 +4,7 @@ export { default as useComponentDidMount } from './useComponentDidMount';
 export { default as usePathname } from './usePathname';
 // export { default as usePrompt } from './usePrompt';
 export { default as useClickOutside } from './useClickOutside';
+export { default as useComponentWillUnmount } from './useComponentWillUnmount';
 export { default as useDebounce } from './useDebounce';
 export { default as useFonts } from './useFonts';
 export { default as useSvgContent } from './useSvgContent';

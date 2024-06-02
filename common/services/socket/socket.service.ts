@@ -52,7 +52,6 @@ class SocketService {
   }
 
   editDesign(data: IGetDesign) {
-    console.log(this.socket);
     if (this.socket.connected) {
       this.socket.emit(DesignEventEnum.EDITING, data);
     }
