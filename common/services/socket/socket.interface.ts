@@ -2,8 +2,8 @@ import { IGetDesign } from '@modules/design/queries';
 
 export interface ServerToClientEvents {
   editing: (data: IGetDesign) => void;
-  join: (isJoin: boolean) => void;
-  leave: (isLeave: boolean) => void;
+  join: (userId: string[]) => void;
+  leave: (userId: string[]) => void;
 }
 
 export interface ClientToServerEvents {
