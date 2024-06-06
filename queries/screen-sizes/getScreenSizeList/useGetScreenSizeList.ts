@@ -9,7 +9,7 @@ import { SHARED_SCREEN_SIZE_QUERY_KEY } from '../keys';
 export function useGetScreenSizeList(
   options?: UseQueryOptions<PaginationResponseType<IScreenSize>, Error>,
 ) {
-  const [params, setParams] = useState<GetScreenSizeListParams>({});
+  const [params, setParams] = useState<GetScreenSizeListParams>({ skip: 0, take: 50 });
   const {
     data,
     error,

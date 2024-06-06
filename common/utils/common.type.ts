@@ -59,6 +59,14 @@ export type TableParams = {
   [key: string]: number | boolean | string | string[] | undefined;
 };
 
+export enum TableQueryParams {
+  SEARCH = 'search',
+  ROWS_PER_PAGE = 'rowsPerPage',
+  PAGE = 'page',
+  SORT = 'sort',
+  FILTER = 'filter',
+}
+
 export type GetPropertiesParams = TableParams & {
   [key: string]: string | number | string[] | boolean;
 };
