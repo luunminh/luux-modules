@@ -9,6 +9,8 @@ type StyledToastProps = PropsWithChildren & {
 
 export const StyledToast: StyledComponent<StyledToastProps> = styled.div<StyledToastProps>`
   /* Base styles for all toasts */
+  position: relative;
+  z-index: 9999999999999999;
   .Toastify__toast {
     box-shadow: 0px 5px 24px 0px rgba(52, 52, 52, 0.15);
     border-radius: 4px;
@@ -16,10 +18,12 @@ export const StyledToast: StyledComponent<StyledToastProps> = styled.div<StyledT
     padding: 8px 12px 12px 16px;
     font-size: 14px;
     min-height: 44px;
+    z-index: 9999;
 
     &-body {
       padding: 0;
       display: flex;
+      z-index: 9999;
       align-items: flex-start;
     }
 
