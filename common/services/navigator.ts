@@ -30,7 +30,12 @@ const jumpToWebIdentity = (nextPath = '') => {
   return window.open(`${getNavigateUrl(identityWebUrl)}${nextPath}`, '_self');
 };
 
-const jumpToWebAdmin = (params?: any) => {};
+const jumpToWebAdmin = (params?: any) => {
+  const formattedParams = stringify(params);
+
+  const adminWebUrl = getPortalUrl(Tenant.ADMIN);
+  return window.open(`${getNavigateUrl(adminWebUrl)}?${formattedParams}`, '_self');
+};
 
 const jumpToWebApp = (params?: any) => {
   const formattedParams = stringify(params);
