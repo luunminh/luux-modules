@@ -1,13 +1,13 @@
+import { ApiResponseType, responseWrapper } from '@core/common/services/http';
 import { QueryFunction, UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MyProfile, ProfileApi } from '.';
-import { ApiResponseType, responseWrapper } from '@core/common/services/http';
 import { COMMON_API_KEYS } from '../key';
 
 const handleGetProfile: QueryFunction<ApiResponseType<MyProfile>, any> = () =>
   responseWrapper<ApiResponseType<MyProfile>>(ProfileApi.getMyProfile);
 
 export function useProfile(
-  options?: UseQueryOptions<ApiResponseType<MyProfile>, Error, MyProfile, any>
+  options?: UseQueryOptions<ApiResponseType<MyProfile>, Error, MyProfile, any>,
 ) {
   const {
     data,
@@ -19,7 +19,6 @@ export function useProfile(
     queryKey: [COMMON_API_KEYS.profile],
     queryFn: handleGetProfile,
     refetchOnMount: false,
-    enabled: false,
     notifyOnChangeProps: ['data', 'isFetching'],
     select: (data) => data.data,
     ...options,

@@ -1,4 +1,4 @@
-import { UserType } from '../profile.type';
+import { UserType } from '../../profile/profile.type';
 
 export type UpdateUserPayload = {
   id: string;
