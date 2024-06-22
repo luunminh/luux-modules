@@ -1,11 +1,10 @@
-import { UserType } from '../../profile/profile.type';
-
 export type UpdateUserPayload = {
   id: string;
   firstName: string;
   lastName: string;
   middleName: string;
-  type?: UserType;
+  type?: string;
+  status?: string;
 };
 
 export type UpdateUserResponse = {};

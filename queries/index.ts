@@ -5,3 +5,4 @@ export * from './elementCategory';
 export * from './font';
 export * from './profile';
 export * from './screen-sizes';
+export * from './users';

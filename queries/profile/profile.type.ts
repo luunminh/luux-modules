@@ -15,6 +15,12 @@ export enum UserType {
   USER = 'USER',
 }
 
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  PENDING = 'PENDING',
+}
+
 export interface MyProfile {
   id: string;
   firstName: string;
